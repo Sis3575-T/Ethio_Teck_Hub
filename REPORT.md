@@ -1,3 +1,67 @@
+# REPORT — Dependency Upgrades & Audit Remediation
+
+Date: 2026-05-04
+
+Overview
+- This branch (`upgrade/deps-audit`) applies dependency upgrades to address `npm audit` findings observed during a security review. Changes were applied to both `frontend` and `backend` packages.
+
+Notable Upgrades
+- Frontend: Vite, Vitest, esbuild (dev) — upgraded to resolve several moderate vulnerabilities reported by `npm audit`.
+- Backend: nodemailer, uuid, node-fetch — upgraded to patched versions.
+
+What I changed
+- Ran `npm audit` and applied `npm audit fix --force` where necessary.
+- Verified frontend build (`npm run build`) and Vitest unit tests locally.
+- Verified backend Jest tests locally after installing a missing `node-fetch@2` compatibility dependency used by `aiService`.
+- Added CI workflow at `.github/workflows/ci.yml` to run frontend build/tests and backend tests on push/PR.
+- Added `backend/scripts/smoke-test.js` and `backend` `smoke` script to perform a basic health check.
+- Implemented UI improvements in `frontend/src/pages/LessonViewer.jsx` (video ended auto-mark, code submission fallback to localStorage, improved navigation logic).
+
+Verification performed
+- Frontend: `npm run build` succeeded; Vitest unit tests passed locally.
+- Backend: Jest test suite passed locally after installing `node-fetch@2`.
+- Smoke test: `/api/health` returns healthy; `/api/courses` returned 401 (expected without auth/DB config).
+
+Risks & Recommendations
+- The fixes required forced semver-major upgrades for some packages; these can introduce runtime behavior changes.
+- Before merging to production, run a staging validation of runtime integrations:
+  - SMTP (password reset, verification emails)
+  - AI service usage paths (ensure `node-fetch` compatibility)
+  - Any third-party SDKs that may have peer dependency constraints
+
+Staging validation checklist
+1. Start staging environment with production-like env vars (DB, SMTP credentials, AI keys).
+2. Run backend smoke tests and full integration tests against staging DB.
+3. Manually validate flows: register → login → open course → play video → mark complete → request password reset (email).
+4. Verify AI-related features (AISession creation, assistant endpoints) behave as expected.
+
+How to run locally
+
+Frontend (from `frontend/`):
+```
+npm install
+npm run dev    # for local development
+npm run build  # verify production build
+npm test       # run vitest
+```
+
+Backend (from `backend/`):
+```
+npm install
+npm test       # run Jest tests
+npm run smoke   # runs basic health smoke test
+node server.js  # or use nodemon in dev
+```
+
+Files of interest
+- `REPORT.md` (this file)
+- `CHANGELOG.md`
+- `frontend/src/pages/LessonViewer.jsx` (UI improvements)
+- `.github/workflows/ci.yml` (CI integration)
+- `backend/scripts/smoke-test.js` (smoke test script)
+
+Notes
+- If anything breaks in staging because of the forced upgrades, we can pin the package(s) to previous versions and handle fixes incrementally. The forced upgrades were chosen to resolve known advisories quickly.
 # Final Report — EthioTech Hub updates
 
 Summary
