@@ -24,10 +24,10 @@
     "mongoose": "^8.9.5",
     "nanoid": "^3.3.12",
     "node-fetch": "^2.7.0",
-    "nodemailer": "^6.9.16",
+    "nodemailer": "^8.0.7",
     "pdfkit": "^0.15.1",
     "socket.io": "^4.8.1",
-    "uuid": "^10.0.0",
+    "uuid": "^14.0.0",
     "xss": "^1.0.15",
     "xss-clean": "^0.1.4"
   },
