@@ -26,3 +26,14 @@ Staging validation checklist:
 2. Run end-to-end smoke flow: register → login → open course → run lesson video → mark complete.
 3. Verify email sending (password reset flow) using test SMTP or capture service.
 4. Validate AI endpoints that use `node-fetch` in `aiService`.
+
+Recent commits (on `upgrade/deps-audit`):
+
+```
+6bf0bbb  chore(report): add REPORT.md and PR_BODY.md for upgrade/deps-audit
+914ea91  test(smoke): add backend smoke test; chore(repo): add REPORT.md
+d953b01  chore(backend): upgrade deps to address audit (nodemailer/uuid)
+d8150e6  chore(frontend): upgrade deps to address audit (vite/vitest/esbuild) and rebuild
+53f473a  chore(security): run npm audit fix (safe fixes) — no major upgrades applied
+a5c624e  chore(security): document npm audit findings in CHANGELOG
+```
